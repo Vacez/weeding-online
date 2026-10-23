@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  Heart, Calendar, Clock, MapPin, Gift, Copy, Check, Send, 
-  Share2, Sparkles, ChevronDown, Music, ExternalLink, Camera,
-  Volume2, Compass, Layers, CheckCircle2, MessageSquareHeart
+  Heart, Gift, Copy, Check, Send, 
+  Sparkles, ChevronDown, Music, 
+  CheckCircle2
 } from 'lucide-react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import AudioPlayer from './AudioPlayer';
@@ -19,6 +19,15 @@ import {
   CulturalCornerOrnaments,
   CulturalDivider
 } from '@/lib/culturalThemes';
+
+// Layout imports
+import JawaLayout from './layouts/JawaLayout';
+import SundaLayout from './layouts/SundaLayout';
+import MinangLayout from './layouts/MinangLayout';
+import BatakLayout from './layouts/BatakLayout';
+import BaliLayout from './layouts/BaliLayout';
+import IslamiLayout from './layouts/IslamiLayout';
+import ModernLayout from './layouts/ModernLayout';
 
 interface InvitationRendererProps {
   invitation: FullInvitation;
@@ -41,7 +50,7 @@ export default function InvitationRenderer({
 
   const [isOpened, setIsOpened] = useState(false);
   const [copiedBank, setCopiedBank] = useState<string | null>(null);
-  const [loveCount, setLoveCount] = useState(148);
+  const [loveCount, setLoveCount] = useState(156);
   const [hasLoved, setHasLoved] = useState(false);
   
   // RSVP Form State
@@ -105,7 +114,7 @@ export default function InvitationRenderer({
   const handleOpenInvitation = () => {
     setIsOpened(true);
     confetti({
-      particleCount: 90,
+      particleCount: 95,
       spread: 75,
       origin: { y: 0.6 },
       colors: [config.accentGold, '#E8D8B8', '#FAF7F0', '#FFFFFF', '#D4AF37'],
@@ -193,6 +202,26 @@ export default function InvitationRenderer({
     { type: 'modern', label: 'Modern Vogue', icon: '✨', musicDesc: 'Romantic Piano' },
   ];
 
+  const renderCulturalLayout = () => {
+    switch (selectedCulture) {
+      case 'jawa':
+        return <JawaLayout invitation={invitation} config={config} primaryEvent={primaryEvent} />;
+      case 'sunda':
+        return <SundaLayout invitation={invitation} config={config} primaryEvent={primaryEvent} />;
+      case 'minang':
+        return <MinangLayout invitation={invitation} config={config} primaryEvent={primaryEvent} />;
+      case 'batak':
+        return <BatakLayout invitation={invitation} config={config} primaryEvent={primaryEvent} />;
+      case 'bali':
+        return <BaliLayout invitation={invitation} config={config} primaryEvent={primaryEvent} />;
+      case 'islami':
+        return <IslamiLayout invitation={invitation} config={config} primaryEvent={primaryEvent} />;
+      case 'modern':
+      default:
+        return <ModernLayout invitation={invitation} config={config} primaryEvent={primaryEvent} />;
+    }
+  };
+
   return (
     <div className={`relative min-h-screen ${config.mainBgClass} ${config.mainTextClass} selection:bg-[#B59A62] selection:text-white transition-colors duration-700 overflow-x-hidden`}>
       
@@ -210,7 +239,7 @@ export default function InvitationRenderer({
       {/* 2. CULTURAL PARTICLES (Ambient floating/falling particles) */}
       <CulturalParticles type={selectedCulture} />
 
-      {/* 3. BACKGROUND AUDIO WITH SOUNDWAVE EQUALIZER */}
+      {/* 3. BACKGROUND AUDIO (Plays continuously without turn-off button) */}
       <AudioPlayer 
         musicUrl={config.musicUrl} 
         musicTitle={config.musicTitle}
@@ -296,16 +325,11 @@ export default function InvitationRenderer({
               </div>
             </div>
 
-            {/* Cultural Headings with Shimmer */}
+            {/* Cultural Headings */}
             <div className="space-y-1.5 pt-1">
-              <motion.p 
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-[11px] tracking-[0.28em] uppercase text-[#E8D8B8]/90 font-medium"
-              >
+              <p className="text-[11px] tracking-[0.28em] uppercase text-[#E8D8B8]/90 font-medium">
                 {config.subHonorific}
-              </motion.p>
+              </p>
               <h1 className="font-serif-cormorant text-4xl sm:text-5xl font-bold tracking-tight text-[#FAF7F0] drop-shadow-md">
                 {content.groomNickname} & {content.brideNickname}
               </h1>
@@ -323,20 +347,15 @@ export default function InvitationRenderer({
             </motion.div>
 
             {/* Personalized Guest Badge */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className={`p-4 rounded-2xl ${config.coverBadgeClass} backdrop-blur-md text-center space-y-1 relative overflow-hidden`}
-            >
+            <div className={`p-4 rounded-2xl ${config.coverBadgeClass} backdrop-blur-md text-center space-y-1 relative overflow-hidden`}>
               <p className="text-[11px] text-[#E8D8B8]/80 font-light">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
               <p className="font-serif-cormorant text-2xl font-bold text-white tracking-wide">
                 {guestName}
               </p>
               <p className="text-[10px] text-[#E8D8B8]/70 italic">Mohon maaf bila ada kesalahan penulisan nama atau gelar</p>
-            </motion.div>
+            </div>
 
-            {/* Music Info Pill with Pulsing Glow */}
+            {/* Music Info Pill with Continuous Playback Indicator */}
             <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-black/40 border border-[#C5A059]/30 text-[11px] text-[#E8D8B8]/95 shadow-inner">
               <Music className="w-3.5 h-3.5 text-[#C5A059] animate-pulse" />
               <span className="truncate max-w-[220px]">Lagu: {config.musicTitle}</span>
@@ -347,9 +366,7 @@ export default function InvitationRenderer({
               onClick={handleOpenInvitation}
               className={`w-full py-4 px-6 rounded-full bg-gradient-to-r ${config.buttonGradientClass} font-bold text-xs tracking-[0.18em] uppercase shadow-2xl hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2.5 group cursor-pointer relative overflow-hidden`}
             >
-              {/* Sweeping light beam */}
               <span className="absolute inset-0 w-1/3 bg-white/30 skew-x-12 animate-shimmer-sweep pointer-events-none" />
-              
               <Sparkles className="w-4 h-4 text-[#1A1412] animate-spin" style={{ animationDuration: '4s' }} />
               <span className="relative z-10 font-extrabold">Buka Undangan Resmi</span>
               <ChevronDown className="w-4 h-4 relative z-10 group-hover:translate-y-1 transition-transform" />
@@ -358,165 +375,11 @@ export default function InvitationRenderer({
         </div>
       )}
 
-      {/* 7. INVITATION MAIN CONTENT CONTAINER WITH SCROLL REVEALS */}
+      {/* 7. THEMATIC CULTURAL MAIN CONTENT (Customized Architecture per Culture) */}
       <main className="max-w-2xl mx-auto px-4 pt-24 pb-20 space-y-16 relative z-20">
         
-        {/* Cultural Hero Section with Scroll Reveal */}
-        <motion.section 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center space-y-4 pt-4 relative"
-        >
-          <p className="text-xs uppercase tracking-[0.3em] font-bold" style={{ color: config.accentGold }}>
-            {config.honorificTitle}
-          </p>
-          <h2 className="font-serif-cormorant text-5xl sm:text-6xl font-bold tracking-tight" style={{ color: config.headingColor }}>
-            {content.groomNickname} & {content.brideNickname}
-          </h2>
-          <p className="text-sm italic font-serif-cormorant text-lg opacity-80">
-            {primaryEvent?.date ? new Date(primaryEvent.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'Sabtu, 20 November 2026'}
-          </p>
-
-          <motion.div
-            animate={{ scale: [0.98, 1.02, 0.98] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <CulturalMotif type={selectedCulture} className="w-20 h-20" />
-          </motion.div>
-          
-          <CulturalDivider type={selectedCulture} />
-        </motion.section>
-
-        {/* Ayat / Cultural Quote Section with Floating Corners */}
-        <motion.section 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className={`p-8 rounded-3xl ${config.cardBgClass} text-center space-y-4 relative shadow-sm hover:shadow-md transition-shadow`}
-        >
-          <CulturalCornerOrnaments type={selectedCulture} />
-          
-          <p className="text-sm sm:text-base italic leading-relaxed font-serif-cormorant text-xl opacity-90">
-            "{content.quote || config.quoteFallback}"
-          </p>
-          <p className="text-xs font-bold tracking-widest uppercase opacity-75" style={{ color: config.headingColor }}>
-            — {content.quoteSource || config.quoteSourceFallback}
-          </p>
-        </motion.section>
-
-        {/* Cultural Salutation & Greeting */}
-        <motion.section 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="text-center space-y-3 px-4"
-        >
-          <p className="font-serif-cormorant text-2xl font-bold" style={{ color: config.headingColor }}>
-            Salam & Kehormatan
-          </p>
-          <p className="text-sm leading-relaxed opacity-80">
-            {content.openingGreeting || config.salutation}
-          </p>
-        </motion.section>
-
-        {/* Couple Profiles (Mempelai) with 3D Hover Elevation */}
-        <section className="space-y-8">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center space-y-1"
-          >
-            <p className="text-xs tracking-widest uppercase font-semibold" style={{ color: config.accentGold }}>
-              Mempelai Bahagia
-            </p>
-            <h3 className="font-serif-cormorant text-3xl font-bold" style={{ color: config.headingColor }}>
-              Pria & Wanita
-            </h3>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            {/* Groom Card */}
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              whileHover={{ y: -6, scale: 1.02 }}
-              className={`p-6 rounded-3xl ${config.cardBgClass} text-center space-y-4 shadow-sm hover:shadow-xl transition-all relative overflow-hidden`}
-            >
-              <div className="relative w-36 h-48 mx-auto rounded-2xl overflow-hidden shadow-lg border-2 group" style={{ borderColor: config.accentGold }}>
-                <img 
-                  src={content.groomPhoto || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80'} 
-                  alt={content.groomName} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-serif-cormorant text-2xl font-bold" style={{ color: config.headingColor }}>
-                  {content.groomName}
-                </h4>
-                <p className="text-xs text-stone-500 font-medium">Putra tercinta dari:</p>
-                <p className="text-xs font-semibold opacity-90">{content.groomFather}</p>
-                <p className="text-xs font-semibold opacity-90">& {content.groomMother}</p>
-              </div>
-              {content.groomInstagram && (
-                <a 
-                  href={`https://instagram.com/${content.groomInstagram}`} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-white/70 hover:bg-white shadow-sm transition-all"
-                  style={{ color: config.headingColor }}
-                >
-                  <Camera className="w-3.5 h-3.5" />
-                  <span>@{content.groomInstagram}</span>
-                </a>
-              )}
-            </motion.div>
-
-            {/* Bride Card */}
-            <motion.div 
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              whileHover={{ y: -6, scale: 1.02 }}
-              className={`p-6 rounded-3xl ${config.cardBgClass} text-center space-y-4 shadow-sm hover:shadow-xl transition-all relative overflow-hidden`}
-            >
-              <div className="relative w-36 h-48 mx-auto rounded-2xl overflow-hidden shadow-lg border-2 group" style={{ borderColor: config.accentGold }}>
-                <img 
-                  src={content.bridePhoto || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80'} 
-                  alt={content.brideName} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-serif-cormorant text-2xl font-bold" style={{ color: config.headingColor }}>
-                  {content.brideName}
-                </h4>
-                <p className="text-xs text-stone-500 font-medium">Putri tercinta dari:</p>
-                <p className="text-xs font-semibold opacity-90">{content.brideFather}</p>
-                <p className="text-xs font-semibold opacity-90">& {content.brideMother}</p>
-              </div>
-              {content.brideInstagram && (
-                <a 
-                  href={`https://instagram.com/${content.brideInstagram}`} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-white/70 hover:bg-white shadow-sm transition-all"
-                  style={{ color: config.headingColor }}
-                >
-                  <Camera className="w-3.5 h-3.5" />
-                  <span>@{content.brideInstagram}</span>
-                </a>
-              )}
-            </motion.div>
-          </div>
-        </section>
+        {/* Render the specialized cultural layout for Hero, Quote, Mempelai, and Acara */}
+        {renderCulturalLayout()}
 
         <CulturalDivider type={selectedCulture} />
 
@@ -557,86 +420,6 @@ export default function InvitationRenderer({
             ))}
           </div>
         </motion.section>
-
-        {/* Wedding Events Section with Staggered Entrance */}
-        <section className="space-y-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center space-y-1"
-          >
-            <p className="text-xs uppercase tracking-widest font-semibold" style={{ color: config.accentGold }}>
-              Rangkaian Acara
-            </p>
-            <h3 className="font-serif-cormorant text-3xl font-bold" style={{ color: config.headingColor }}>
-              Waktu & Tempat Pelaksanaan
-            </h3>
-          </motion.div>
-
-          <div className="space-y-4">
-            {invitation.events?.map((ev, i) => (
-              <motion.div 
-                key={i} 
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15 }}
-                whileHover={{ scale: 1.01 }}
-                className={`p-6 sm:p-8 rounded-3xl ${config.cardBgClass} space-y-4 shadow-sm hover:shadow-lg transition-all relative overflow-hidden`}
-              >
-                <div className="flex items-center justify-between border-b border-stone-300/60 pb-3">
-                  <h4 className="font-serif-cormorant text-2xl font-bold" style={{ color: config.headingColor }}>
-                    {ev.title}
-                  </h4>
-                  {ev.isPrimary && (
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white shadow-sm" style={{ color: config.headingColor }}>
-                      Acara Utama
-                    </span>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="flex items-center gap-2.5">
-                    <Calendar className="w-4 h-4 text-stone-500 flex-shrink-0" />
-                    <span>{new Date(ev.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <Clock className="w-4 h-4 text-stone-500 flex-shrink-0" />
-                    <span>{ev.startTime} - {ev.endTime} {ev.timezone}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-1 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <MapPin className="w-4 h-4 text-stone-500 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-bold text-sm" style={{ color: config.headingColor }}>{ev.venueName}</p>
-                      <p className="text-stone-600 leading-relaxed">{ev.venueAddress}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {ev.mapsUrl && (
-                  <div className="pt-2">
-                    <a 
-                      href={ev.mapsUrl} 
-                      target="_blank" 
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-stone-50 text-xs font-semibold shadow-sm border border-stone-200 transition-all cursor-pointer"
-                      style={{ color: config.headingColor }}
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Petunjuk Lokasi Google Maps</span>
-                    </a>
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        <CulturalDivider type={selectedCulture} />
 
         {/* Digital Gift & Amplop Digital */}
         {invitation.gifts && invitation.gifts.length > 0 && (
