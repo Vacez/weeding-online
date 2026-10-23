@@ -1,0 +1,273 @@
+// Prisma schema for Digital Wedding Invitation Marketplace
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          String         @default("CUSTOMER") // "CUSTOMER" | "ADMIN"
+  phone         String?
+  avatar        String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  orders        Order[]
+  invitations   Invitation[]
+  favorites     Favorite[]
+}
+
+model CulturalTradition {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  region           String
+  description      String
+  bannerUrl        String?
+  culturalElements String?  // JSON or comma separated keywords
+  colorPalette     String?  // JSON array
+  themes           Theme[]
+  createdAt        DateTime @default(now())
+}
+
+model ThemeCategory {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  icon        String?
+  themes      Theme[]
+  createdAt   DateTime @default(now())
+}
+
+model Theme {
+  id             String             @id @default(cuid())
+  name           String
+  slug           String             @unique
+  description    String
+  shortDesc      String
+  category       ThemeCategory      @relation(fields: [categoryId], references: [id])
+  categoryId     String
+  tradition      CulturalTradition? @relation(fields: [traditionId], references: [id])
+  traditionId    String?
+  price          Int
+  originalPrice  Int?
+  badge          String?            // 'BESTSELLER', 'POPULAR', 'NEW', 'EXCLUSIVE'
+  rating         Float              @default(4.9)
+  salesCount     Int                @default(0)
+  coverImage     String
+  previewImages  String             // JSON array string
+  features       String             // JSON array string
+  colorPalette   String             // JSON array string
+  musicUrl       String?
+  format         String             @default("standard")
+  active         Boolean            @default(true)
+  featured       Boolean            @default(false)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  invitations    Invitation[]
+  orders         Order[]
+  favorites      Favorite[]
+}
+
+model Package {
+  id            String       @id @default(cuid())
+  code          String       @unique // 'BASIC', 'PREMIUM', 'EXCLUSIVE'
+  name          String
+  slug          String       @unique
+  price         Int
+  originalPrice Int?
+  description   String
+  isPopular     Boolean      @default(false)
+  features      String       // JSON array of included features
+  active        Boolean      @default(true)
+  orders        Order[]
+  invitations   Invitation[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Order {
+  id                  String       @id @default(cuid())
+  orderNumber         String       @unique
+  user                User         @relation(fields: [userId], references: [id])
+  userId              String
+  package             Package      @relation(fields: [packageId], references: [id])
+  packageId           String
+  theme               Theme        @relation(fields: [themeId], references: [id])
+  themeId             String
+  grossAmount         Int
+  discountAmount      Int          @default(0)
+  netAmount           Int
+  status              String       @default("PENDING") // PENDING, PAID, FAILED, EXPIRED, REFUNDED
+  customerName        String
+  customerEmail       String
+  customerPhone       String
+  notes               String?
+  midtransToken       String?
+  midtransRedirectUrl String?
+  paymentMethod       String?
+  paidAt              DateTime?
+  invitations         Invitation[]
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+}
+
+model Invitation {
+  id             String            @id @default(cuid())
+  slug           String            @unique
+  title          String
+  user           User              @relation(fields: [userId], references: [id])
+  userId         String
+  order          Order?            @relation(fields: [orderId], references: [id])
+  orderId        String?
+  theme          Theme             @relation(fields: [themeId], references: [id])
+  themeId        String
+  package        Package           @relation(fields: [packageId], references: [id])
+  packageId      String
+  status         String            @default("DRAFT") // DRAFT, PUBLISHED, ARCHIVED
+  viewCount      Int               @default(0)
+  publishedAt    DateTime?
+  musicUrl       String?
+  content        InvitationContent?
+  events         InvitationEvent[]
+  galleries      InvitationGallery[]
+  guests         Guest[]
+  rsvps          RSVP[]
+  gifts          DigitalGift[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+}
+
+model InvitationContent {
+  id              String     @id @default(cuid())
+  invitation      Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitationId    String     @unique
+  groomName       String
+  groomNickname   String
+  groomFather     String
+  groomMother     String
+  groomPhoto      String?
+  groomInstagram  String?
+  brideName       String
+  brideNickname   String
+  brideFather     String
+  brideMother     String
+  bridePhoto      String?
+  brideInstagram  String?
+  quote           String?
+  quoteSource     String?
+  openingGreeting String?
+  closingGreeting String?
+  loveStoryJson   String?    // JSON array: [{ year, title, story }]
+}
+
+model InvitationEvent {
+  id           String     @id @default(cuid())
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitationId String
+  title        String     // 'Akad Nikah', 'Resepsi', 'Ngunduh Mantu'
+  eventType    String     // 'CEREMONY', 'RECEPTION', 'OTHER'
+  date         String     // '2026-12-12'
+  startTime    String     // '08:00'
+  endTime      String     // '11:00'
+  timezone     String     @default("WIB")
+  venueName    String
+  venueAddress String
+  mapsUrl      String?
+  isPrimary    Boolean    @default(false)
+}
+
+model InvitationGallery {
+  id           String     @id @default(cuid())
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitationId String
+  imageUrl     String
+  caption      String?
+  sortOrder    Int        @default(0)
+}
+
+model Guest {
+  id           String     @id @default(cuid())
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitationId String
+  name         String
+  slug         String
+  phone        String?
+  email        String?
+  qrCodeUrl    String?
+  createdAt    DateTime   @default(now())
+
+  @@unique([invitationId, slug])
+}
+
+model RSVP {
+  id           String     @id @default(cuid())
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitationId String
+  guestName    String
+  attendance   String     @default("ATTENDING") // ATTENDING, NOT_ATTENDING, MAYBE
+  pax          Int        @default(1)
+  message      String
+  createdAt    DateTime   @default(now())
+}
+
+model DigitalGift {
+  id            String     @id @default(cuid())
+  invitation    Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitationId  String
+  bankName      String     // 'BCA', 'Mandiri', 'BRI', 'QRIS'
+  accountNumber String
+  accountHolder String
+  qrisImageUrl  String?
+}
+
+model Coupon {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  discountPercent Int?      // e.g. 15 for 15%
+  discountAmount  Int?      // e.g. 50000 for Rp 50.000
+  minPurchase     Int       @default(0)
+  validUntil      DateTime?
+  maxUsage        Int       @default(100)
+  usedCount       Int       @default(0)
+  active          Boolean   @default(true)
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  theme     Theme    @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  themeId   String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, themeId])
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  coupleName  String
+  weddingDate String
+  themeName   String
+  rating      Int      @default(5)
+  reviewText  String
+  avatarUrl   String?
+  featured    Boolean  @default(true)
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
