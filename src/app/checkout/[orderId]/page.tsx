@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
@@ -53,7 +53,7 @@ export default function CheckoutPage() {
       const res = await fetch('/api/coupons/apply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: couponCode, amount: order?.grossAmount || 249000 }),
+        body: JSON.stringify({ code: couponCode, amount: order?.grossAmount || 100000 }),
       });
       const data = await res.json();
       if (res.ok && data.valid) {
@@ -98,7 +98,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const gross = order?.grossAmount || 249000;
+  const gross = order?.grossAmount || 100000;
   const net = Math.max(0, gross - discountAmount);
 
   return (

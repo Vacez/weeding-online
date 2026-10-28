@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -8,7 +8,7 @@ import { Sparkles, Check, ArrowRight } from 'lucide-react';
 
 export const metadata = {
   title: 'Paket & Harga Undangan Digital | Janji Digital',
-  description: 'Pilihan paket undangan pernikahan digital transparan dan terjangkau, mulai dari Paket Basic hingga Exclusive VIP.',
+  description: 'Pilihan paket undangan pernikahan digital transparan dan terjangkau, mulai dari Paket Basic (50k), Paket Premium (100k), hingga Exclusive VIP (150k).',
 };
 
 export default async function PricingPage() {

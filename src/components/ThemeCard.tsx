@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -113,8 +113,8 @@ export default function ThemeCard({ theme, onPreview }: ThemeCardProps) {
         {/* Price & Action */}
         <div className="mt-4 pt-3 border-t border-[#B59A62]/15 flex items-center justify-between">
           <div>
-            <div className="text-xs text-[#292929]/50 line-through">
-              {theme.originalPrice ? formatRupiah(theme.originalPrice) : ''}
+            <div className="text-[10px] text-stone-500 font-medium">
+              Mulai Paket Basic:
             </div>
             <div className="text-base font-bold text-[#24382E]">
               {formatRupiah(theme.price)}

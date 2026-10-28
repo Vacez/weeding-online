@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -14,6 +14,7 @@ interface CustomizationWizardProps {
   themes: Theme[];
   packages: Package[];
   initialThemeSlug?: string;
+  initialPackageSlug?: string;
   initialData?: any;
 }
 
@@ -21,6 +22,7 @@ export default function CustomizationWizard({
   themes,
   packages,
   initialThemeSlug,
+  initialPackageSlug,
   initialData,
 }: CustomizationWizardProps) {
   const router = useRouter();
@@ -30,7 +32,19 @@ export default function CustomizationWizard({
   // Selected Theme & Package
   const defaultTheme = themes.find((t) => t.slug === initialThemeSlug) || themes[0];
   const [selectedTheme, setSelectedTheme] = useState<Theme>(defaultTheme);
-  const [selectedPackage, setSelectedPackage] = useState<Package>(packages.find((p) => p.isPopular) || packages[0]);
+
+  const defaultPackage =
+    (initialPackageSlug &&
+      packages.find(
+        (p) =>
+          p.slug === initialPackageSlug ||
+          p.code.toLowerCase() === initialPackageSlug.toLowerCase() ||
+          p.id === initialPackageSlug
+      )) ||
+    packages.find((p) => p.isPopular) ||
+    packages[0];
+
+  const [selectedPackage, setSelectedPackage] = useState<Package>(defaultPackage);
 
   // Form Fields
   const [formData, setFormData] = useState({

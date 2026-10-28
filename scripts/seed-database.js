@@ -1,4 +1,4 @@
-﻿const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 const crypto = require('crypto');
 const prisma = new PrismaClient();
 
@@ -175,18 +175,21 @@ async function main() {
       code: 'BASIC',
       name: 'Paket Basic',
       slug: 'paket-basic',
-      price: 149000,
-      originalPrice: 249000,
-      description: 'Pilihan hemat untuk pernikahan intim dengan informasi esensial lengkap dan tampilan responsif.',
+      price: 50000,
+      originalPrice: 99000,
+      description: 'Pilihan hemat untuk pernikahan intim dengan template elegan, informasi esensial lengkap, dan navigasi acara.',
       isPopular: false,
       features: JSON.stringify([
-        '1 Pilihan Tema Undangan',
-        'Informasi Kedua Mempelai & Orang Tua',
-        'Detail Acara Akad & Resepsi',
-        '1 URL Undangan Publik Aktif 6 Bulan',
-        'Navigasi Langsung Google Maps',
-        'Hitung Mundur Waktu Acara (Countdown)',
-        'Desain Responsif Semua HP & Tablet'
+        '1 Pilihan Template Undangan (Modern / Adat)',
+        'Informasi Profil Kedua Mempelai & Orang Tua',
+        'Detail Susunan Acara Akad & Resepsi',
+        'Petunjuk Arah & Navigasi Langsung Google Maps',
+        'Hitung Mundur Waktu Acara (Countdown Timer)',
+        'Galeri Foto Prewedding (Hingga 5 Foto)',
+        'Musik Latar Otomatis (Autoplay Audio)',
+        'Tombol Kirim WhatsApp & Share Medsos',
+        'Desain Responsif Semua HP & Tablet',
+        'Masa Aktif Undangan 6 Bulan'
       ]),
     },
     {
@@ -194,20 +197,21 @@ async function main() {
       code: 'PREMIUM',
       name: 'Paket Premium',
       slug: 'paket-premium',
-      price: 249000,
-      originalPrice: 399000,
-      description: 'Paket paling diminati! Lengkap dengan galeri foto, musik romantis, amplop digital, dan konfirmasi kehadiran RSVP.',
+      price: 100000,
+      originalPrice: 199000,
+      description: 'Paket paling diminati! Lengkap dengan semua template adat & modern, live RSVP, amplop digital QRIS, dan galeri foto.',
       isPopular: true,
       features: JSON.stringify([
         'Semua Fitur Paket Basic',
-        'Galeri Foto Prewedding (Hingga 10 Foto)',
-        'Musik Latar Otomatis (Autoplay Audio)',
-        'Konfirmasi Kehadiran Tamu (Live RSVP)',
+        'Bebas Akses Seluruh Template Adat Nusantara & Modern',
+        'Galeri Foto Prewedding (Hingga 15 Foto)',
+        'Amplop Digital & Tanda Kasih (Bank & QRIS)',
+        'Konfirmasi Kehadiran Tamu (Live RSVP Interaktif)',
         'Buku Tamu Ucapan & Doa Restu Realtime',
-        'Amplop Digital & Tanda Kasih (BCA/Mandiri/QRIS)',
-        'Personalisasi Nama Tamu Tak Terbatas',
-        'Tombol Share WhatsApp Otomatis',
-        'Masa Aktif 1 Tahun Penuh'
+        'Personalisasi Nama Tamu Tak Terbatas (?to=Nama)',
+        'Fitur Salin Nomor Rekening Otomatis',
+        'Partikel Animasi & Efek Budaya Nusantara',
+        'Masa Aktif Undangan 1 Tahun Penuh'
       ]),
     },
     {
@@ -215,18 +219,19 @@ async function main() {
       code: 'EXCLUSIVE',
       name: 'Paket Exclusive VIP',
       slug: 'paket-exclusive-vip',
-      price: 399000,
-      originalPrice: 599000,
-      description: 'Solusi paripurna tanpa batas. Kustom subdomain, QR code check-in tamu VIP, video streaming, dan tanpa watermark.',
+      price: 150000,
+      originalPrice: 299000,
+      description: 'Solusi paripurna tanpa batas. Akses ke seluruh template eksklusif, love story timeline, video teaser, QR check-in, dan masa aktif selamanya.',
       isPopular: false,
       features: JSON.stringify([
         'Semua Fitur Paket Premium',
-        'Kustom Slug URL Unik Pilihan Sendiri',
-        'QR Code Check-In Tamu di Meja Resepsi',
-        'Manajemen Buku Tamu & Ekspor Data Excel',
-        'Galeri Foto Tanpa Batas + Video Teaser',
-        'Live Streaming YouTube / Zoom Embed',
+        'Akses Bebas Semua Template VIP & Eksklusif',
+        'Galeri Foto Tanpa Batas (Unlimited) + Video Embed Teaser',
         'Kisah Perjalanan Cinta (Love Story Timeline)',
+        'QR Code Check-In Tamu Meja Resepsi',
+        'Manajemen Buku Tamu & Ekspor Data Excel',
+        'Kustom Slug URL Unik Pilihan Sendiri',
+        'Bebas Ganti Musik Latar Pilihan Sendiri',
         'Bebas Watermark Janji Digital',
         'Masa Aktif Selamanya (Lifetime)'
       ]),

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -25,6 +25,7 @@ export default async function HomePage() {
 
   const packages = await prisma.package.findMany({
     where: { active: true },
+    orderBy: { price: 'asc' },
   });
 
   const testimonials = await prisma.testimonial.findMany({

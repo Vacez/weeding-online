@@ -34,6 +34,7 @@ export default async function WizardPage({ searchParams }: Props) {
           themes={themes as any}
           packages={packages as any}
           initialThemeSlug={theme}
+          initialPackageSlug={pkgSlug}
         />
       </div>
     </div>
