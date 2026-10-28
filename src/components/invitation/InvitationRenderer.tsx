@@ -9,6 +9,7 @@ import {
 import { motion, useScroll, useSpring } from 'framer-motion';
 import AudioPlayer from './AudioPlayer';
 import CulturalParticles from './CulturalParticles';
+import CulturalOpeningGates from './CulturalOpeningGates';
 import { FullInvitation, Theme } from '@/lib/types';
 import confetti from 'canvas-confetti';
 import { 
@@ -303,77 +304,16 @@ export default function InvitationRenderer({
         </motion.div>
       )}
 
-      {/* 6. CULTURAL COVER SCREEN OVERLAY (Until opened) */}
-      {!isOpened && (
-        <div className={`fixed inset-0 z-30 flex items-center justify-center p-4 bg-gradient-to-b ${config.coverBgClass} ${config.coverTextClass} transition-all duration-700 overflow-y-auto`}>
-          <motion.div 
-            initial={{ scale: 0.92, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
-            className={`max-w-md w-full text-center space-y-5 p-8 sm:p-10 rounded-3xl bg-black/45 backdrop-blur-xl border ${config.coverBorderClass} shadow-[0_20px_60px_rgba(0,0,0,0.65)] relative overflow-hidden my-auto`}
-          >
-            {/* Cultural frame corner accents */}
-            <CulturalCornerOrnaments type={selectedCulture} />
-
-            {/* Glowing Ring & Cultural Wax Seal */}
-            <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border border-dashed border-[#C5A059]/50 animate-spin-slow pointer-events-none" />
-              <div className="wax-seal shadow-[0_0_25px_rgba(197,160,89,0.5)] transition-transform hover:scale-110 duration-300">
-                <span className="font-serif-cormorant text-2xl font-bold tracking-tighter text-[#2A1D17]">
-                  {config.waxSealMonogram}
-                </span>
-              </div>
-            </div>
-
-            {/* Cultural Headings */}
-            <div className="space-y-1.5 pt-1">
-              <p className="text-[11px] tracking-[0.28em] uppercase text-[#E8D8B8]/90 font-medium">
-                {config.subHonorific}
-              </p>
-              <h1 className="font-serif-cormorant text-4xl sm:text-5xl font-bold tracking-tight text-[#FAF7F0] drop-shadow-md">
-                {content.groomNickname} & {content.brideNickname}
-              </h1>
-              <p className="text-xs text-[#E8D8B8]/80 italic font-serif">
-                {config.honorificTitle}
-              </p>
-            </div>
-
-            {/* Authentic Cultural Motif with gentle breathing animation */}
-            <motion.div
-              animate={{ y: [-3, 3, -3] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <CulturalMotif type={selectedCulture} className="w-24 h-24" />
-            </motion.div>
-
-            {/* Personalized Guest Badge */}
-            <div className={`p-4 rounded-2xl ${config.coverBadgeClass} backdrop-blur-md text-center space-y-1 relative overflow-hidden`}>
-              <p className="text-[11px] text-[#E8D8B8]/80 font-light">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
-              <p className="font-serif-cormorant text-2xl font-bold text-white tracking-wide">
-                {guestName}
-              </p>
-              <p className="text-[10px] text-[#E8D8B8]/70 italic">Mohon maaf bila ada kesalahan penulisan nama atau gelar</p>
-            </div>
-
-            {/* Music Info Pill with Continuous Playback Indicator */}
-            <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-black/40 border border-[#C5A059]/30 text-[11px] text-[#E8D8B8]/95 shadow-inner">
-              <Music className="w-3.5 h-3.5 text-[#C5A059] animate-pulse" />
-              <span className="truncate max-w-[220px]">Lagu: {config.musicTitle}</span>
-            </div>
-
-            {/* Open CTA with light sweep shimmer */}
-            <button
-              onClick={handleOpenInvitation}
-              className={`w-full py-4 px-6 rounded-full bg-gradient-to-r ${config.buttonGradientClass} font-bold text-xs tracking-[0.18em] uppercase shadow-2xl hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2.5 group cursor-pointer relative overflow-hidden`}
-            >
-              <span className="absolute inset-0 w-1/3 bg-white/30 skew-x-12 animate-shimmer-sweep pointer-events-none" />
-              <Sparkles className="w-4 h-4 text-[#1A1412] animate-spin" style={{ animationDuration: '4s' }} />
-              <span className="relative z-10 font-extrabold">Buka Undangan Resmi</span>
-              <ChevronDown className="w-4 h-4 relative z-10 group-hover:translate-y-1 transition-transform" />
-            </button>
-          </motion.div>
-        </div>
-      )}
+      {/* 6. CULTURAL COVER & OPENING GATES WITH AUTHENTIC THEMATIC LANDMARK */}
+      <CulturalOpeningGates
+        config={config}
+        selectedCulture={selectedCulture}
+        groomNickname={content.groomNickname}
+        brideNickname={content.brideNickname}
+        guestName={guestName}
+        isOpened={isOpened}
+        onOpened={() => setIsOpened(true)}
+      />
 
       {/* 7. THEMATIC CULTURAL MAIN CONTENT (Customized Architecture per Culture) */}
       <main className="max-w-2xl mx-auto px-4 pt-24 pb-20 space-y-16 relative z-20">

@@ -15,6 +15,20 @@ export interface CulturalThemeConfig {
   closingSalutation: string;
   quoteFallback: string;
   quoteSourceFallback: string;
+  // Iconic Landmark & Gate Opening
+  landmarkName: string;
+  landmarkSubtitle: string;
+  landmarkImage: string;
+  gateTitle: string;
+  gateSubtitle: string;
+  welcomeAksara: string;
+  welcomeGreeting: string;
+  gateColorTheme: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    border: string;
+  };
   // Styles
   coverBgClass: string;
   coverBorderClass: string;
@@ -66,6 +80,19 @@ export const CULTURAL_CONFIGS: Record<CulturalType, CulturalThemeConfig> = {
     closingSalutation: 'Mugi Gusti Allah tansah maringi berkah katentreman lan kawilujengan dumateng kita sedaya.',
     quoteFallback: 'Ngluruk tanpa bala, menang tanpa ngasorake, sekti tanpa aji-aji, sugih tanpa bandha. Memayu hayuning bawana.',
     quoteSourceFallback: 'Filosofi Luhur Jawa & Serat Centhini',
+    landmarkName: 'Candi Agung Borobudur & Keraton Mataram',
+    landmarkSubtitle: 'Kemegahan Stupa Candi Sakral & Wibawa Pusaka Keraton',
+    landmarkImage: 'https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&w=1920&q=85',
+    gateTitle: 'Gapura Kori Ageng Bangsal Kencana',
+    gateSubtitle: 'Serat Ulem Pawiwahan Dalem Hadiningrat',
+    welcomeAksara: 'ꦱꦸꦒꦼꦁꦫꦮꦸꦃ',
+    welcomeGreeting: 'Sugeng Rawuh Para Rawuh Ingkang Minulyo',
+    gateColorTheme: {
+      primary: '#2A1D17',
+      secondary: '#1A1412',
+      accent: '#C5A059',
+      border: '#C5A059',
+    },
     coverBgClass: 'from-[#1A1412] via-[#2A1D17] to-[#120D0B]',
     coverBorderClass: 'border-[#C5A059]/40',
     coverTextClass: 'text-[#F5EAD4]',
@@ -90,6 +117,19 @@ export const CULTURAL_CONFIGS: Record<CulturalType, CulturalThemeConfig> = {
     closingSalutation: 'Hatur nuhun kana sagala perhatosan sareng kasumpingan wargi sadaya. Mugia ginuluran karahayuan.',
     quoteFallback: 'Silih asih, silih asah, silih asuh. Kanyaah salawasna nyangcang dina rasa, nyaangan jalan kahirupan kulawarga.',
     quoteSourceFallback: 'Kearifan Luhur Parahyangan',
+    landmarkName: 'Perbukitan Asri Parahyangan & Tangkuban Perahu',
+    landmarkSubtitle: 'Kesejukan Lembah Hijau Priangan & Sejuta Pesona Pasundan',
+    landmarkImage: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=85',
+    gateTitle: 'Bale Kencana Kujang Parahyangan',
+    gateSubtitle: 'Wawar Uleman Walimatul Ursy Pasundan',
+    welcomeAksara: 'ᮝᮤᮜᮥᮏᮨᮀ ᮞᮥᮙ᮪ᮕᮤᮀ',
+    welcomeGreeting: 'Wilujeng Sumping ka Bale Kanyaah',
+    gateColorTheme: {
+      primary: '#153222',
+      secondary: '#0E2217',
+      accent: '#D4B26F',
+      border: '#DFCEAC',
+    },
     coverBgClass: 'from-[#12281D] via-[#1A3828] to-[#0A1811]',
     coverBorderClass: 'border-[#DFCEAC]/40',
     coverTextClass: 'text-[#FDFBF7]',
@@ -114,6 +154,19 @@ export const CULTURAL_CONFIGS: Record<CulturalType, CulturalThemeConfig> = {
     closingSalutation: 'Katampek duduak nan jo baselo, kapulang mambaok rido. Tarimo kasih ateh kadatangan sarato do\'a restu dunsanak.',
     quoteFallback: 'Anak dipangku kamanakan dibimbing, adaik basandi syarak, syarak basandi Kitabullah. Sabiduak sadayuang ka tapian bahagia.',
     quoteSourceFallback: 'Pepatah Petitih Adat Minangkabau',
+    landmarkName: 'Kemegahan Rumah Gadang & Lembah Harau Minang',
+    landmarkSubtitle: 'Atap Gonjong Runcing Menjulang Nan Sakral di Ranah Minang',
+    landmarkImage: 'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=1920&q=85',
+    gateTitle: 'Pintu Tabir Baralek Gadang Ranah Minang',
+    gateSubtitle: 'Adaik Basandi Syarak, Syarak Basandi Kitabullah',
+    welcomeAksara: 'سلاويك داتڠ',
+    welcomeGreeting: 'Salamaik Datang di Pesta Baralek Gadang',
+    gateColorTheme: {
+      primary: '#4A0E18',
+      secondary: '#2C060D',
+      accent: '#E0B338',
+      border: '#E0B338',
+    },
     coverBgClass: 'from-[#3A0A12] via-[#54121D] to-[#200408]',
     coverBorderClass: 'border-[#E0B338]/40',
     coverTextClass: 'text-[#FFF7E8]',
@@ -138,6 +191,19 @@ export const CULTURAL_CONFIGS: Record<CulturalType, CulturalThemeConfig> = {
     closingSalutation: 'Mauliate godang di saluhut panuturion, tangiang, dohot haroromuna. Sai dipasupasu Tuhanta ma pardalananta.',
     quoteFallback: 'Tombak gurgur tu dolok ni purbatua. Sai torkis ma hita on saluhutna, tubuan anak dohot boru, marpanumpak Tuhanta.',
     quoteSourceFallback: 'Umpasa Batak Toba & Dalihan Na Tolu',
+    landmarkName: 'Danau Toba Nan Sakral & Pusuk Buhit',
+    landmarkSubtitle: 'Kaldera Abadi Nan Megah & Rumah Adat Bolon Gorga',
+    landmarkImage: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=1920&q=85',
+    gateTitle: 'Gerbang Gorga Singa-singa Ruma Bolon',
+    gateSubtitle: 'Gokhon Dohot Jou-jou Pamasu-masuon',
+    welcomeAksara: 'ᯂᯬᯒᯘ᯲',
+    welcomeGreeting: 'Horas Jala Gabe Ma Di Hita Saluhutna',
+    gateColorTheme: {
+      primary: '#2A0E0E',
+      secondary: '#190707',
+      accent: '#C89D3C',
+      border: '#C89D3C',
+    },
     coverBgClass: 'from-[#1F0C0C] via-[#331111] to-[#140808]',
     coverBorderClass: 'border-[#C89D3C]/40',
     coverTextClass: 'text-[#F9F5EC]',
@@ -162,6 +228,19 @@ export const CULTURAL_CONFIGS: Record<CulturalType, CulturalThemeConfig> = {
     closingSalutation: 'Suksma kalintang mantuka ring rasa tresna, pituut miwah pemargi semeton sami. Om Shanti, Shanti, Shanti Om.',
     quoteFallback: 'Asih, asah, asuh ring sajroning suadarma pawiwahan. Mogi Ida Sang Hyang Widhi Wasa ngicenin karahayuan langgeng.',
     quoteSourceFallback: 'Sloka Manawa Dharmasastra IX.101',
+    landmarkName: 'Pura Ulun Danu Beratan & Candi Bentar Dewata',
+    landmarkSubtitle: 'Pesona Danau Suci Beratan & Gapura Megah Kori Agung',
+    landmarkImage: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=85',
+    gateTitle: 'Gapura Kori Agung Candi Bentar Bali',
+    gateSubtitle: 'Pawiwahan Suci Karahayuan Tri Hita Karana',
+    welcomeAksara: 'ᬑᬁ ᬲ᭄ᬯᬲ᭄ᬢ᭄ᬬᬲ᭄ᬢᬸ',
+    welcomeGreeting: 'Om Swastyastu — Rahajeng Rauh Semeton',
+    gateColorTheme: {
+      primary: '#331B13',
+      secondary: '#1F0F0A',
+      accent: '#D4A836',
+      border: '#D4A836',
+    },
     coverBgClass: 'from-[#281813] via-[#3D2118] to-[#180E0B]',
     coverBorderClass: 'border-[#D4A836]/40',
     coverTextClass: 'text-[#FDF7ED]',
@@ -186,6 +265,19 @@ export const CULTURAL_CONFIGS: Record<CulturalType, CulturalThemeConfig> = {
     closingSalutation: 'Jazakumullahu khairan katsiran atas kehadiran dan doa restu Bapak/Ibu/Saudara/i sekalian. Wassalamu\'alaikum Wr. Wb.',
     quoteFallback: 'Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.',
     quoteSourceFallback: 'Surah Ar-Rum Ayat 21',
+    landmarkName: 'Masjid Nabawi Madinah & Kubah Emas Bercahaya',
+    landmarkSubtitle: 'Payung Megah Madinah Munawwarah & Keindahan Lengkung Arabesque',
+    landmarkImage: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1920&q=85',
+    gateTitle: 'Bawwabah Nur Madinah Walimatul Ursy',
+    gateSubtitle: 'Mitsaqan Ghalidza Menuju Sakinah Mawaddah Warahmah',
+    welcomeAksara: 'أهلاً وسهلاً',
+    welcomeGreeting: 'Ahlan Wa Sahlan fi Walimatil Ursy Al-Mubarak',
+    gateColorTheme: {
+      primary: '#0F2C20',
+      secondary: '#091A13',
+      accent: '#D4AF37',
+      border: '#D4AF37',
+    },
     coverBgClass: 'from-[#0A1F16] via-[#133526] to-[#06150E]',
     coverBorderClass: 'border-[#D4AF37]/40',
     coverTextClass: 'text-[#F6FAF7]',
@@ -210,6 +302,19 @@ export const CULTURAL_CONFIGS: Record<CulturalType, CulturalThemeConfig> = {
     closingSalutation: 'Your presence, prayers, and warm wishes mean the world to us as we begin our new journey together.',
     quoteFallback: 'Two souls with but a single thought, two hearts that beat as one. A love that endures and grows through every season of life.',
     quoteSourceFallback: 'Timeless Romance & 1 Corinthians 13:13',
+    landmarkName: 'The Grand Cathedral Glasshouse & Floral Ballroom',
+    landmarkSubtitle: 'Arsitektur Kaca Kontemporer Bertabur Chandelier Kristal Mewah',
+    landmarkImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=85',
+    gateTitle: 'The Royal Velvet & Crystal Portal',
+    gateSubtitle: 'A Timeless & Elegant Celebration of Love',
+    welcomeAksara: 'ETERNAL LOVE',
+    welcomeGreeting: 'Welcome to Our New Beginning',
+    gateColorTheme: {
+      primary: '#1C1C1E',
+      secondary: '#101012',
+      accent: '#B59A62',
+      border: '#B59A62',
+    },
     coverBgClass: 'from-[#171717] via-[#262626] to-[#0D0D0D]',
     coverBorderClass: 'border-[#C5A059]/40',
     coverTextClass: 'text-[#FAF8F5]',
