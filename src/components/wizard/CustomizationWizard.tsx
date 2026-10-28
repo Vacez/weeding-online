@@ -4,11 +4,31 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Check, ArrowRight, ArrowLeft, Sparkles, Heart, Calendar, 
-  MapPin, Image as ImageIcon, Music, Gift, Eye, ShieldCheck 
+  MapPin, Image as ImageIcon, Music, Gift, Eye, ShieldCheck,
+  Upload, Camera, Trash2, Volume2, Loader2, Play
 } from 'lucide-react';
 import { Theme, Package } from '@/lib/types';
 import { formatRupiah } from '@/lib/utils';
 import InvitationRenderer from '../invitation/InvitationRenderer';
+
+const PRESET_MUSIC = [
+  {
+    title: 'Gamelan Jawa Gendhing Kebo Giro (Sakral & Megah)',
+    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=traditional-acoustic-112191.mp3',
+  },
+  {
+    title: 'Sunda Kacapi Suling Romantis (Syahdu & Sejuk)',
+    url: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_24e23cf673.mp3?filename=acoustic-guitars-ambient-10825.mp3',
+  },
+  {
+    title: 'Minang Saluang & Talempong Sakato (Elegan)',
+    url: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=cinematic-atmosphere-score-2-22136.mp3',
+  },
+  {
+    title: 'Romantis Akustik Modern Piano & Strings',
+    url: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=emotional-piano-inspirational-112193.mp3',
+  },
+];
 
 interface CustomizationWizardProps {
   themes: Theme[];
@@ -99,10 +119,54 @@ export default function CustomizationWizard({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [previewDevice, setPreviewDevice] = useState<'mobile' | 'desktop'>('mobile');
 
   const updateField = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileUpload = async (field: string, file: File) => {
+    setUploadingField(field);
+    try {
+      const localPreview = URL.createObjectURL(file);
+      updateField(field, localPreview);
+
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: form,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) {
+          updateField(field, data.url);
+          return;
+        }
+      }
+
+      // Fallback to Data URL if network or storage issue
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          updateField(field, reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Upload error fallback:', err);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          updateField(field, reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setUploadingField(null);
+    }
   };
 
   const stepsHeader = [
@@ -254,9 +318,11 @@ export default function CustomizationWizard({
             },
           ],
           galleries: [
-            { imageUrl: formData.gallery1, caption: 'Prewedding 1' },
-            { imageUrl: formData.gallery2, caption: 'Prewedding 2' },
-          ],
+            formData.gallery1 ? { imageUrl: formData.gallery1, caption: 'Prewedding 1' } : null,
+            formData.gallery2 ? { imageUrl: formData.gallery2, caption: 'Prewedding 2' } : null,
+            formData.gallery3 ? { imageUrl: formData.gallery3, caption: 'Prewedding 3' } : null,
+            formData.gallery4 ? { imageUrl: formData.gallery4, caption: 'Prewedding 4' } : null,
+          ].filter(Boolean) as any,
           gifts: formData.enableGift
             ? [
                 {
@@ -393,6 +459,42 @@ export default function CustomizationWizard({
                   />
                 </div>
               </div>
+              {/* Foto Mempelai Pria */}
+              <div>
+                <label className="block text-xs font-semibold text-stone-700 mb-1.5">Foto Mempelai Pria (Upload dari HP / File)</label>
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-3.5 bg-white rounded-xl border border-stone-200">
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#B59A62]/40 bg-stone-100 flex-shrink-0 relative shadow-inner">
+                    {formData.groomPhoto ? (
+                      <img src={formData.groomPhoto} alt="Foto Pria" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-stone-400">
+                        <Camera className="w-5 h-5" />
+                      </div>
+                    )}
+                    {uploadingField === 'groomPhoto' && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 text-center sm:text-left space-y-1">
+                    <label className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#24382E] text-white text-xs font-semibold cursor-pointer hover:bg-[#192821] transition-all shadow-sm">
+                      <Upload className="w-3.5 h-3.5 text-[#C5A059]" />
+                      <span>{uploadingField === 'groomPhoto' ? 'Mengunggah...' : 'Pilih Foto dari HP'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleFileUpload('groomPhoto', f);
+                        }}
+                      />
+                    </label>
+                    <p className="text-[11px] text-stone-500">Ambil dari galeri HP atau kamera (JPG, PNG, WEBP)</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="p-4 rounded-xl bg-[#FAF7F0] border border-[#B59A62]/20 space-y-3">
@@ -444,6 +546,43 @@ export default function CustomizationWizard({
                     onChange={(e) => updateField('brideMother', e.target.value)}
                     className="w-full px-3 py-2 text-sm rounded-lg border border-stone-300 focus:border-[#B59A62] outline-none"
                   />
+                </div>
+              </div>
+
+              {/* Foto Mempelai Wanita */}
+              <div>
+                <label className="block text-xs font-semibold text-stone-700 mb-1.5">Foto Mempelai Wanita (Upload dari HP / File)</label>
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-3.5 bg-white rounded-xl border border-stone-200">
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#B59A62]/40 bg-stone-100 flex-shrink-0 relative shadow-inner">
+                    {formData.bridePhoto ? (
+                      <img src={formData.bridePhoto} alt="Foto Wanita" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-stone-400">
+                        <Camera className="w-5 h-5" />
+                      </div>
+                    )}
+                    {uploadingField === 'bridePhoto' && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 text-center sm:text-left space-y-1">
+                    <label className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#24382E] text-white text-xs font-semibold cursor-pointer hover:bg-[#192821] transition-all shadow-sm">
+                      <Upload className="w-3.5 h-3.5 text-[#C5A059]" />
+                      <span>{uploadingField === 'bridePhoto' ? 'Mengunggah...' : 'Pilih Foto dari HP'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleFileUpload('bridePhoto', f);
+                        }}
+                      />
+                    </label>
+                    <p className="text-[11px] text-stone-500">Ambil dari galeri HP atau kamera (JPG, PNG, WEBP)</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -622,54 +761,147 @@ export default function CustomizationWizard({
             <p className="text-xs text-stone-500">Pilih foto prewedding dan musik latar romantis yang menyentuh hati</p>
           </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">URL Musik Latar (MP3)</label>
-              <input
-                type="text"
-                value={formData.musicUrl}
-                onChange={(e) => updateField('musicUrl', e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-stone-300 focus:border-[#B59A62] outline-none"
-              />
-              <p className="text-[11px] text-stone-500 mt-1">Gunakan link MP3 langsung atau pilih instrumen bawaan bertema tradisi</p>
+          <div className="space-y-6">
+            {/* Musik Latar */}
+            <div className="p-5 rounded-2xl bg-[#FAF7F0] border border-[#B59A62]/30 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Music className="w-5 h-5 text-[#B59A62]" />
+                  <h3 className="font-serif-cormorant text-xl font-bold text-[#24382E]">Musik Latar Undangan</h3>
+                </div>
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium">
+                  Putar Otomatis
+                </span>
+              </div>
+
+              {/* Upload Song from Phone/Device */}
+              <div className="p-4 bg-white rounded-xl border border-stone-200 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs font-semibold text-stone-800">Upload Lagu Sendiri dari HP</h4>
+                    <p className="text-[11px] text-stone-500">Pilih file audio MP3, WAV, atau M4A langsung dari penyimpanan HP/Laptop</p>
+                  </div>
+                  <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#24382E] text-white text-xs font-semibold cursor-pointer hover:bg-[#1b2b23] transition-all shadow-sm flex-shrink-0">
+                    <Upload className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span>{uploadingField === 'musicUrl' ? 'Mengunggah...' : 'Upload Lagu dari HP'}</span>
+                    <input
+                      type="file"
+                      accept="audio/*,.mp3,.wav,.m4a,.aac"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleFileUpload('musicUrl', f);
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {formData.musicUrl && (
+                  <div className="pt-3 border-t border-stone-100 space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px] text-stone-600 font-medium">
+                      <span>Dengarkan Pratinjau Lagu:</span>
+                      {uploadingField === 'musicUrl' && (
+                        <span className="text-amber-600 flex items-center gap-1">
+                          <Loader2 className="w-3 h-3 animate-spin" /> Memproses...
+                        </span>
+                      )}
+                    </div>
+                    <audio controls src={formData.musicUrl} className="w-full h-10 rounded-lg outline-none" />
+                  </div>
+                )}
+              </div>
+
+              {/* Preset Music Selector */}
+              <div className="space-y-2 pt-1">
+                <label className="block text-xs font-semibold text-stone-700">Atau Pilih Musik Tradisional / Romantis Bawaan:</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {PRESET_MUSIC.map((item) => (
+                    <button
+                      key={item.url}
+                      type="button"
+                      onClick={() => updateField('musicUrl', item.url)}
+                      className={`p-3 text-left rounded-xl border text-xs transition-all flex items-center justify-between cursor-pointer ${
+                        formData.musicUrl === item.url
+                          ? 'border-[#24382E] bg-[#E8D8B8]/30 font-semibold text-[#24382E] ring-1 ring-[#B59A62]'
+                          : 'border-stone-200 bg-white text-stone-600 hover:border-stone-300'
+                      }`}
+                    >
+                      <span className="truncate pr-2">{item.title}</span>
+                      {formData.musicUrl === item.url && <Check className="w-3.5 h-3.5 text-[#24382E] flex-shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1">Foto Galeri 1 (URL)</label>
-                <input
-                  type="text"
-                  value={formData.gallery1}
-                  onChange={(e) => updateField('gallery1', e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-stone-300 outline-none"
-                />
+            {/* Galeri Prewedding */}
+            <div className="p-5 rounded-2xl bg-[#FAF7F0] border border-[#B59A62]/30 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5 text-[#B59A62]" />
+                  <h3 className="font-serif-cormorant text-xl font-bold text-[#24382E]">Foto Galeri Prewedding</h3>
+                </div>
+                <span className="text-xs text-stone-500">Maksimal 4 Foto</span>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1">Foto Galeri 2 (URL)</label>
-                <input
-                  type="text"
-                  value={formData.gallery2}
-                  onChange={(e) => updateField('gallery2', e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-stone-300 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1">Foto Galeri 3 (URL)</label>
-                <input
-                  type="text"
-                  value={formData.gallery3}
-                  onChange={(e) => updateField('gallery3', e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-stone-300 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1">Foto Galeri 4 (URL)</label>
-                <input
-                  type="text"
-                  value={formData.gallery4}
-                  onChange={(e) => updateField('gallery4', e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-stone-300 outline-none"
-                />
+              <p className="text-xs text-stone-500">Unggah momen terindah Anda berdua langsung dari kamera atau galeri HP</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {(['gallery1', 'gallery2', 'gallery3', 'gallery4'] as const).map((key, idx) => {
+                  const currentImg = formData[key];
+                  const isUploading = uploadingField === key;
+                  return (
+                    <div
+                      key={key}
+                      className="p-3.5 bg-white rounded-xl border border-stone-200 flex flex-col justify-between space-y-3 shadow-sm hover:border-[#B59A62]/40 transition-all"
+                    >
+                      <div className="flex items-center justify-between text-xs font-semibold text-stone-700">
+                        <span>Foto Galeri {idx + 1}</span>
+                        {currentImg && (
+                          <button
+                            type="button"
+                            onClick={() => updateField(key, '')}
+                            className="text-stone-400 hover:text-red-600 transition-colors"
+                            title="Hapus foto"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="aspect-[4/3] rounded-lg overflow-hidden bg-stone-100 border border-stone-200 relative group flex items-center justify-center">
+                        {currentImg ? (
+                          <img src={currentImg} alt={`Galeri ${idx + 1}`} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="text-center p-4 text-stone-400 space-y-1">
+                            <Camera className="w-7 h-7 mx-auto stroke-1" />
+                            <span className="text-[11px] block">Belum ada foto</span>
+                          </div>
+                        )}
+
+                        {isUploading && (
+                          <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white gap-1">
+                            <Loader2 className="w-6 h-6 animate-spin text-[#C5A059]" />
+                            <span className="text-[11px] font-medium">Mengunggah...</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <label className="inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-stone-100 hover:bg-[#24382E] text-stone-700 hover:text-white text-xs font-medium cursor-pointer transition-all border border-stone-200">
+                        <Upload className="w-3.5 h-3.5 text-[#B59A62]" />
+                        <span>{currentImg ? 'Ganti Foto dari HP' : 'Upload Foto dari HP'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleFileUpload(key, f);
+                          }}
+                        />
+                      </label>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
